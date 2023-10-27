@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import qtawesome as qta
 
 from camera_calibration.custom_components.dock_base import BaseDock
@@ -109,15 +111,7 @@ class PatternDock(BaseDock):
 
         self.display = MyPatternDisplay()
         self.display.closed.connect(self.show_button.toggle)
-        pixmap = make_pattern_pixmap(
-            settings["screen"],
-            settings["cols"],
-            settings["rows"],
-            settings["size"],
-            settings["radius_rate"],
-            settings["pattern"],
-        )
-        self.display.setPixmap(pixmap)
+        self.display.set_pattern(settings)
 
         self.display.show()
         self.display.windowHandle().setScreen(settings["screen"])
@@ -133,6 +127,38 @@ class MyPatternDisplay(QtWidgets.QLabel):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+
+        self.pixmap = None
+        self.settings = None
+
+        self.context_menu = QtWidgets.QMenu(self)
+        export_action = self.context_menu.addAction("Export")
+        export_action.setIcon(qta.icon("mdi6.export"))
+        export_action.triggered.connect(self.export_pattern)
+
+    def set_pattern(self, settings):
+        self.settings = settings
+        self.pixmap = make_pattern_pixmap(
+            settings["screen"],
+            settings["cols"],
+            settings["rows"],
+            settings["size"],
+            settings["radius_rate"],
+            settings["pattern"],
+        )
+        self.setPixmap(self.pixmap)
+
+    def export_pattern(self):
+        save_url, _ = QtWidgets.QFileDialog.getSaveFileUrl(
+            self,
+            caption="Save as",
+            filter="Portable Network Graphics (*.png);; JPEG (*.jpg)",
+        )
+        save_path = Path(save_url.toLocalFile())
+        self.pixmap.save(str(save_path))
+
+    def contextMenuEvent(self, event):
+        self.context_menu.exec(event.globalPos())
 
     def keyPressEvent(self, evt):
         if evt.key() == QtCore.Qt.Key_Escape:
