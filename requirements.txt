@@ -42,12 +42,6 @@ opencv-contrib-python-headless==4.8.1.78 ; python_version >= "3.11" and python_v
 packaging==23.2 ; python_version >= "3.11" and python_version < "3.13" \
     --hash=sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5 \
     --hash=sha256:8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7
-pygments==2.16.1 ; python_version >= "3.11" and python_version < "3.13" \
-    --hash=sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692 \
-    --hash=sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29
-pyqtgraph==0.13.3 ; python_version >= "3.11" and python_version < "3.13" \
-    --hash=sha256:58108d8411c7054e0841d8b791ee85e101fc296b9b359c0e01dde38a98ff2ace \
-    --hash=sha256:fdcc04ac4b32a7bedf1bf3cf74cbb93ab3ba5687791712bbfa8d0712377d2f2b
 pyside6-addons==6.6.0 ; python_version >= "3.11" and python_version < "3.13" \
     --hash=sha256:414864f7cfbdf8ac4c5a745566a515f18b6018d5730bf5489cc2716b5e1fcd9b \
     --hash=sha256:5c56e963b841aeaacbc9ca8ca34df45308818dbd6fc59faa2b5a00a299e9892b \
@@ -74,9 +68,3 @@ shiboken6==6.6.0 ; python_version >= "3.11" and python_version < "3.13" \
     --hash=sha256:bf23c43e53ffe6097853666ced05358c6640c378e992902a36c4cf77efb0223b \
     --hash=sha256:e62b2610b84f0ff7ed0181a4c535849cdc0654127097b5ef561cf0a33078f245 \
     --hash=sha256:fb8c683206c3365f9240fff7f908485384893b02efb089b69ff816b4390baa9a
-superqt==0.6.1 ; python_version >= "3.11" and python_version < "3.13" \
-    --hash=sha256:93c063b77581f9b0883b6198a6365d5cdacb5e4953fb2f7b0466d741c3bbfd30 \
-    --hash=sha256:f1a9e0499c4bbcef34b6f895eb57cd41301b3799242cd030029238124184dade
-typing-extensions==4.8.0 ; python_version >= "3.11" and python_version < "3.13" \
-    --hash=sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0 \
-    --hash=sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef

@@ -161,21 +161,6 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
-name = "pygments"
-version = "2.16.1"
-description = "Pygments is a syntax highlighting package written in Python."
-category = "main"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "Pygments-2.16.1-py3-none-any.whl", hash = "sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692"},
-    {file = "Pygments-2.16.1.tar.gz", hash = "sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29"},
-]
-
-[package.extras]
-plugins = ["importlib-metadata"]
-
-[[package]]
 name = "pyinstaller"
 version = "6.1.0"
 description = "PyInstaller bundles a Python application and all its dependencies into a single package."
@@ -220,21 +205,6 @@ files = [
     {file = "pyinstaller-hooks-contrib-2023.10.tar.gz", hash = "sha256:4b4a998036abb713774cb26534ca06b7e6e09e4c628196017a10deb11a48747f"},
     {file = "pyinstaller_hooks_contrib-2023.10-py2.py3-none-any.whl", hash = "sha256:6dc1786a8f452941245d5bb85893e2a33632ebdcbc4c23eea41f2ee08281b0c0"},
 ]
-
-[[package]]
-name = "pyqtgraph"
-version = "0.13.3"
-description = "Scientific Graphics and GUI Library for Python"
-category = "main"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "pyqtgraph-0.13.3-py3-none-any.whl", hash = "sha256:fdcc04ac4b32a7bedf1bf3cf74cbb93ab3ba5687791712bbfa8d0712377d2f2b"},
-    {file = "pyqtgraph-0.13.3.tar.gz", hash = "sha256:58108d8411c7054e0841d8b791ee85e101fc296b9b359c0e01dde38a98ff2ace"},
-]
-
-[package.dependencies]
-numpy = ">=1.20.0"
 
 [[package]]
 name = "pyside6"
@@ -387,53 +357,7 @@ files = [
     {file = "shiboken6-6.6.0-cp38-abi3-win_amd64.whl", hash = "sha256:e62b2610b84f0ff7ed0181a4c535849cdc0654127097b5ef561cf0a33078f245"},
 ]
 
-[[package]]
-name = "superqt"
-version = "0.6.1"
-description = "Missing widgets and components for PyQt/PySide"
-category = "main"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "superqt-0.6.1-py3-none-any.whl", hash = "sha256:93c063b77581f9b0883b6198a6365d5cdacb5e4953fb2f7b0466d741c3bbfd30"},
-    {file = "superqt-0.6.1.tar.gz", hash = "sha256:f1a9e0499c4bbcef34b6f895eb57cd41301b3799242cd030029238124184dade"},
-]
-
-[package.dependencies]
-packaging = "*"
-pygments = ">=2.4.0"
-qtpy = ">=1.1.0"
-typing-extensions = ">=3.7.4.3,<3.10.0.0 || >3.10.0.0"
-
-[package.extras]
-cmap = ["cmap (>=0.1.1)"]
-dev = ["black", "ipython", "mypy", "pdbpp", "pre-commit", "pydocstyle", "rich", "ruff", "types-pygments"]
-docs = ["cmap", "mkdocs-macros-plugin", "mkdocs-material", "mkdocstrings[python]", "pint"]
-font-fa5 = ["fonticon-fontawesome5"]
-font-fa6 = ["fonticon-fontawesome6"]
-font-mi6 = ["fonticon-materialdesignicons6"]
-font-mi7 = ["fonticon-materialdesignicons7"]
-iconify = ["pyconify (>=0.1.4)"]
-pyqt5 = ["pyqt5"]
-pyqt6 = ["pyqt6"]
-pyside2 = ["pyside2"]
-pyside6 = ["pyside6 (!=6.5.0,!=6.5.1)"]
-quantity = ["pint"]
-test = ["cmap", "numpy", "pint", "pyconify", "pytest", "pytest-cov", "pytest-qt"]
-
-[[package]]
-name = "typing-extensions"
-version = "4.8.0"
-description = "Backported and Experimental Type Hints for Python 3.8+"
-category = "main"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "typing_extensions-4.8.0-py3-none-any.whl", hash = "sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0"},
-    {file = "typing_extensions-4.8.0.tar.gz", hash = "sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef"},
-]
-
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "ca9d3f5abb1b02a12806758484c1569e9df566a829f8746510bd9ca42a1e752f"
+content-hash = "b19f2a9ca486eae0d0081cf9704e92e1eeb46c1e71e56daa4273ee6b49b1b987"
