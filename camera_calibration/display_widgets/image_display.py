@@ -22,7 +22,7 @@ class ImageDisplay(QtWidgets.QFrame):
         layout.addWidget(self.item_label, 0, 0)
 
         self.delete_button = QtWidgets.QPushButton(self)
-        self.delete_button.setIcon(qta.icon("mdi6.close-circle", color="red"))
+        self.delete_button.setIcon(qta.icon("mdi6.close"))
         self.delete_button.setFlat(True)
         self.delete_button.clicked.connect(self.close_clicked.emit)
         layout.addWidget(self.delete_button, 0, 1)

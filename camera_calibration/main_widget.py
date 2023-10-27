@@ -21,7 +21,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.setWindowTitle("Calibrate Camera")
         self.setWindowIcon(QtGui.QIcon(str(resource_dir() / "calibration.svg")))
-        self.resize(500, 800)
+        self.resize(800, 600)
 
         self.main_widget = DroppableWidget(filetypes=["image"], parent=self)
         self.main_widget.setToolTip("Drop images here.")
