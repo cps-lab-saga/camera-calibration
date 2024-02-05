@@ -92,8 +92,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         pattern_settings = self.docks["Pattern"].get_settings()
         image_display.find_points(
-            pattern_settings["rows"],
-            pattern_settings["cols"],
+            pattern_settings["rows"] - 1,
+            pattern_settings["cols"] - 1,
             pattern_settings["pattern"],
         )
 
