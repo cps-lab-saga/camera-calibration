@@ -2,7 +2,14 @@ from defs import QtCore, QtWidgets, QtGui
 
 
 def make_pattern_pixmap(
-    screen, cols, rows, square_size, radius_rate=5, pattern="Checkerboard"
+    screen,
+    cols,
+    rows,
+    square_size,
+    page_width,
+    page_height,
+    radius_rate=5,
+    pattern="Checkerboard",
 ):
     width_mm = screen.physicalSize().width()
     height_mm = screen.physicalSize().height()
@@ -13,19 +20,19 @@ def make_pattern_pixmap(
     x_size = square_size / width_mm * width_px
     y_size = square_size / height_mm * height_px
 
-    pixmap = QtGui.QPixmap(width_px, height_px)
+    pixmap = QtGui.QPixmap(page_width, page_height)
 
     if pattern == "Checkerboard":
         draw_checkerboard_pattern(
-            pixmap, cols, rows, x_size, y_size, width_px, height_px
+            pixmap, cols, rows, x_size, y_size, page_width, page_height
         )
     elif pattern == "Circles":
         draw_circles_pattern(
-            pixmap, cols, rows, radius_rate, x_size, y_size, width_px, height_px
+            pixmap, cols, rows, radius_rate, x_size, y_size, page_width, page_height
         )
     elif pattern == "Asymmetric Circles":
         draw_acircles_pattern(
-            pixmap, cols, rows, radius_rate, x_size, y_size, width_px, height_px
+            pixmap, cols, rows, radius_rate, x_size, y_size, page_width, page_height
         )
 
     return pixmap
@@ -83,8 +90,8 @@ def draw_circles_pattern(
     for x in range(0, cols):
         for y in range(0, rows):
             painter.drawEllipse(
-                round((x * x_size) + x_spacing),
-                round((y * y_size) + y_spacing),
+                round((x * x_size) + x_spacing + r_x / 2),
+                round((y * y_size) + y_spacing + r_y / 2),
                 round(r_x),
                 round(r_y),
             )
@@ -117,8 +124,8 @@ def draw_acircles_pattern(
     for x in range(0, cols):
         for y in range(0, rows):
             painter.drawEllipse(
-                round((2 * x * x_size) + (y % 2) * x_size + x_spacing),
-                round((y * y_size) + y_spacing),
+                round((2 * x * x_size) + (y % 2) * x_size + x_spacing + r_x / 2),
+                round((y * y_size) + y_spacing + r_y / 2),
                 round(r_x),
                 round(r_y),
             )

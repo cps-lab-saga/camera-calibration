@@ -23,7 +23,7 @@ class PatternDock(BaseDock):
         self.show_pattern_combobox.addItems(
             ["Checkerboard", "Circles", "Asymmetric Circles"]
         )
-        self.show_pattern_combobox.currentIndexChanged.connect(self.show_button_toggled)
+        self.show_pattern_combobox.currentIndexChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_pattern_combobox)
 
         row_layout = QtWidgets.QHBoxLayout()
@@ -33,14 +33,14 @@ class PatternDock(BaseDock):
         self.show_col_spinbox.setSuffix(" Columns")
         self.show_col_spinbox.setRange(1, 100)
         self.show_col_spinbox.setValue(10)
-        self.show_col_spinbox.valueChanged.connect(self.show_button_toggled)
+        self.show_col_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_col_spinbox)
 
         self.show_row_spinbox = QtWidgets.QSpinBox(self)
         self.show_row_spinbox.setSuffix(" Rows")
         self.show_row_spinbox.setRange(1, 100)
         self.show_row_spinbox.setValue(10)
-        self.show_row_spinbox.valueChanged.connect(self.show_button_toggled)
+        self.show_row_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_row_spinbox)
 
         row_layout = QtWidgets.QHBoxLayout()
@@ -53,7 +53,7 @@ class PatternDock(BaseDock):
         self.show_size_spinbox.setDecimals(1)
         self.show_size_spinbox.setSingleStep(0.5)
         self.show_size_spinbox.setValue(25)
-        self.show_size_spinbox.valueChanged.connect(self.show_button_toggled)
+        self.show_size_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_size_spinbox)
 
         row_layout = QtWidgets.QHBoxLayout()
@@ -65,7 +65,7 @@ class PatternDock(BaseDock):
         self.show_radius_spinbox.setDecimals(1)
         self.show_radius_spinbox.setSingleStep(0.5)
         self.show_radius_spinbox.setValue(5)
-        self.show_radius_spinbox.valueChanged.connect(self.show_button_toggled)
+        self.show_radius_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_radius_spinbox)
 
         row_layout = QtWidgets.QHBoxLayout()
@@ -109,13 +109,17 @@ class PatternDock(BaseDock):
     def show_pattern(self):
         settings = self.get_settings()
 
-        self.display = MyPatternDisplay()
+        self.display = MyPatternDisplay(settings)
         self.display.closed.connect(self.show_button.toggle)
-        self.display.set_pattern(settings)
+        self.display.set_pattern()
 
         self.display.show()
         self.display.windowHandle().setScreen(settings["screen"])
-        self.display.showFullScreen()
+
+    def update_pattern(self):
+        if self.display is not None:
+            settings = self.get_settings()
+            self.display.update_settings(settings)
 
     def gui_save(self, settings):
         self.display = None
@@ -125,28 +129,45 @@ class PatternDock(BaseDock):
 class MyPatternDisplay(QtWidgets.QLabel):
     closed = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(parent=parent)
 
         self.pixmap = None
-        self.settings = None
+        self.settings = settings
 
+        self.setWindowTitle("Pattern (F11 to toggle Full Screen)")
+
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Ignored,
+            QtWidgets.QSizePolicy.Policy.Ignored,
+        )
         self.context_menu = QtWidgets.QMenu(self)
         export_action = self.context_menu.addAction("Export")
         export_action.setIcon(qta.icon("mdi6.export"))
         export_action.triggered.connect(self.export_pattern)
 
-    def set_pattern(self, settings):
-        self.settings = settings
+    def set_pattern(self):
+        page_width, page_height = self.width(), self.height()
         self.pixmap = make_pattern_pixmap(
-            settings["screen"],
-            settings["cols"],
-            settings["rows"],
-            settings["size"],
-            settings["radius_rate"],
-            settings["pattern"],
+            self.settings["screen"],
+            self.settings["cols"],
+            self.settings["rows"],
+            self.settings["size"],
+            page_width,
+            page_height,
+            radius_rate=self.settings["radius_rate"],
+            pattern=self.settings["pattern"],
         )
         self.setPixmap(self.pixmap)
+
+    def update_settings(self, settings):
+        self.settings = settings
+        self.set_pattern()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.set_pattern()
 
     def export_pattern(self):
         save_url, _ = QtWidgets.QFileDialog.getSaveFileUrl(
@@ -160,10 +181,18 @@ class MyPatternDisplay(QtWidgets.QLabel):
     def contextMenuEvent(self, event):
         self.context_menu.exec(event.globalPos())
 
+    def closeEvent(self, event):
+        self.closed.emit()
+        super().closeEvent(event)
+
     def keyPressEvent(self, evt):
         if evt.key() == QtCore.Qt.Key_Escape:
-            self.closed.emit()
-            self.deleteLater()
+            self.close()
+        elif evt.key() == QtCore.Qt.Key_F11:
+            if self.isFullScreen():
+                self.showNormal()
+            else:
+                self.showFullScreen()
 
 
 if __name__ == "__main__":

@@ -11,7 +11,8 @@ from PySide6 import QtGui
 
 from camera_calibration.custom_components import DroppableWidget, FlowLayout
 from camera_calibration.display_widgets import ImageDisplay
-from camera_calibration.docks import PatternDock, CalibrateDock
+from camera_calibration.display_widgets.camera_display import CameraDisplay
+from camera_calibration.docks import PatternDock, CameraDock, CalibrateDock
 from defs import QtCore, QtWidgets, log_file, settings_file, resource_dir
 
 
@@ -46,16 +47,19 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.docks = {
             "Pattern": PatternDock(),
+            "Camera": CameraDock(),
             "Calibrate": CalibrateDock(),
         }
         for dock in self.docks.values():
             self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+        self.docks["Camera"].connect_camera_clicked.connect(self.open_camera)
         self.docks["Calibrate"].calibrate_clicked.connect(self.calibrate)
         self.docks["Calibrate"].save_clicked.connect(self.save_calibration)
 
         self.image_display_items = []
         self.image_width = 100
 
+        self.camera_display = None
         self.rms_error = None
         self.intrinsic_matrix = None
         self.distortion_coeffs = None
@@ -111,6 +115,12 @@ class MainWidget(QtWidgets.QMainWindow):
             self.scroll_area_layout.removeWidget(image_display)
             image_display.deleteLater()
         self.image_display_items.clear()
+
+    def open_camera(self, camera_no):
+        self.camera_display = CameraDisplay(camera_no)
+        self.camera_display.add_image.connect(self.add_image)
+        self.camera_display.closed.connect(self.docks["Camera"].camera_closed())
+        self.camera_display.show()
 
     def calibrate(self):
         imgshapes = []
