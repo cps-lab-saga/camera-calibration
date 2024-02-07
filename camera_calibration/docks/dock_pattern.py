@@ -71,11 +71,11 @@ class PatternDock(BaseDock):
         row_layout = QtWidgets.QHBoxLayout()
         self.dock_layout.addLayout(row_layout)
 
-        self.screen_combobox = QtWidgets.QComboBox(self)
-        for i in range(len(self.screens)):
-            self.screen_combobox.addItem("Screen {}".format(i + 1))
-        self.screen_combobox.currentIndexChanged.connect(self.show_button_toggled)
-        row_layout.addWidget(self.screen_combobox)
+        # self.screen_combobox = QtWidgets.QComboBox(self)
+        # for i in range(len(self.screens)):
+        #     self.screen_combobox.addItem("Screen {}".format(i + 1))
+        # self.screen_combobox.currentIndexChanged.connect(self.show_button_toggled)
+        # row_layout.addWidget(self.screen_combobox)
 
         icon_size = 18
         self.show_button = QtWidgets.QPushButton(self)
@@ -99,7 +99,6 @@ class PatternDock(BaseDock):
     def get_settings(self):
         return dict(
             pattern=self.show_pattern_combobox.currentText(),
-            screen=self.screens[int(self.screen_combobox.currentText()[-1]) - 1],
             rows=self.show_row_spinbox.value(),
             cols=self.show_col_spinbox.value(),
             size=self.show_size_spinbox.value(),
@@ -111,10 +110,7 @@ class PatternDock(BaseDock):
 
         self.display = MyPatternDisplay(settings)
         self.display.closed.connect(self.show_button.toggle)
-        self.display.set_pattern()
-
         self.display.show()
-        self.display.windowHandle().setScreen(settings["screen"])
 
     def update_pattern(self):
         if self.display is not None:
@@ -134,6 +130,7 @@ class MyPatternDisplay(QtWidgets.QLabel):
 
         self.pixmap = None
         self.settings = settings
+        self.resize(600, 600)
 
         self.setWindowTitle("Pattern (F11 to toggle Full Screen)")
 
@@ -149,8 +146,9 @@ class MyPatternDisplay(QtWidgets.QLabel):
 
     def set_pattern(self):
         page_width, page_height = self.width(), self.height()
+
         self.pixmap = make_pattern_pixmap(
-            self.settings["screen"],
+            self.windowHandle().screen(),
             self.settings["cols"],
             self.settings["rows"],
             self.settings["size"],
