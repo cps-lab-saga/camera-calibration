@@ -18,6 +18,8 @@ from defs import QtCore, QtWidgets, log_file, settings_file, resource_dir
 
 
 class MainWidget(QtWidgets.QMainWindow):
+    calibration_saved = QtCore.Signal(object)
+
     def __init__(self):
         super().__init__()
 
@@ -71,6 +73,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.distortion_coeffs = None
         self.rotation_vecs = None
         self.translation_vecs = None
+        self.save_path = None
 
         self.pool = QtCore.QThreadPool.globalInstance()
 
@@ -135,8 +138,8 @@ class MainWidget(QtWidgets.QMainWindow):
         imgpoints = []
         for image_display in self.image_display_items:
             if (
-                image_display.objpoints is not None
-                and image_display.imgpoints is not None
+                    image_display.objpoints is not None
+                    and image_display.imgpoints is not None
             ):
                 objpoints.append(image_display.objpoints)
                 imgpoints.append(image_display.imgpoints)
@@ -176,14 +179,14 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def save_calibration(self):
         if any(
-            (
-                self.fisheye is None,
-                self.rms_error is None,
-                self.intrinsic_matrix is None,
-                self.distortion_coeffs is None,
-                self.rotation_vecs is None,
-                self.translation_vecs is None,
-            )
+                (
+                        self.fisheye is None,
+                        self.rms_error is None,
+                        self.intrinsic_matrix is None,
+                        self.distortion_coeffs is None,
+                        self.rotation_vecs is None,
+                        self.translation_vecs is None,
+                )
         ):
             self.error_dialog("No calibration available!")
             return
@@ -191,10 +194,10 @@ class MainWidget(QtWidgets.QMainWindow):
         save_url, _ = QtWidgets.QFileDialog.getSaveFileUrl(
             self, caption="Save as", filter="JSON (*.json);; Numpy Binary (*.npz)"
         )
-        save_path = Path(save_url.toLocalFile())
+        self.save_path = Path(save_url.toLocalFile())
 
-        if save_path.suffix == ".json":
-            with open(save_path, "w") as f:
+        if self.save_path.suffix == ".json":
+            with open(self.save_path, "w") as f:
                 json.dump(
                     dict(
                         K=self.intrinsic_matrix.tolist(),
@@ -206,13 +209,14 @@ class MainWidget(QtWidgets.QMainWindow):
                     indent=4,
                 )
 
-        elif save_path.suffix == ".npz":
+        elif self.save_path.suffix == ".npz":
             np.savez(
-                save_path,
+                self.save_path,
                 K=self.intrinsic_matrix,
                 D=self.distortion_coeffs,
                 fisheye=self.fisheye,
             )
+        self.calibration_saved.emit(self.save_path)
 
     def clear_results(self):
         self.rms_error = None
@@ -221,6 +225,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.rotation_vecs = None
         self.translation_vecs = None
         self.fisheye = None
+        self.save_path = None
         self.docks["Calibrate"].results_label.setText("")
 
     def output_results(self):
