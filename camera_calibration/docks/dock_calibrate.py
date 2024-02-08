@@ -25,10 +25,16 @@ class CalibrateDock(BaseDock):
         self.calibrate_button.clicked.connect(self.calibrate_button_clicked)
         self.dock_layout.addWidget(self.calibrate_button)
 
-        self.results_label = QtWidgets.QLabel(self)
-        self.dock_layout.addWidget(self.results_label)
+        self.results_scroll_area = QtWidgets.QScrollArea(self)
+        self.results_scroll_area.setWidgetResizable(True)
+        self.results_contents = QtWidgets.QWidget(self)
+        self.results_scroll_area.setWidget(self.results_contents)
+        self.scroll_area_layout = QtWidgets.QVBoxLayout(self.results_contents)
+        self.dock_layout.addWidget(self.results_scroll_area)
 
-        self.dock_layout.addStretch()
+        self.results_label = QtWidgets.QLabel(self)
+        self.results_label.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.scroll_area_layout.addWidget(self.results_label)
 
         icon_size = 18
         self.save_button = QtWidgets.QPushButton(self)
@@ -44,13 +50,13 @@ class CalibrateDock(BaseDock):
         self.start_calibrate.emit(camera_model == "fisheye")
 
     def set_results(
-        self,
-        rms_error,
-        intrinsic_matrix,
-        distortion_coeffs,
-        rotation_vecs,
-        translation_vecs,
-        fisheye,
+            self,
+            rms_error,
+            intrinsic_matrix,
+            distortion_coeffs,
+            rotation_vecs,
+            translation_vecs,
+            fisheye,
     ):
         fx = intrinsic_matrix[0, 0]
         fy = intrinsic_matrix[1, 1]
@@ -69,10 +75,10 @@ class CalibrateDock(BaseDock):
             f"Optical Centres,\n"
             f"cx = {cx:.0f}\n"
             f"cy = {cy:.0f}\n"
-            f"\n\n"
+            f"\n"
             f"Camera Matrix,\n"
             f"{intrinsic_matrix.astype(int)}\n"
-            f"\n\n"
+            f"\n"
         )
         if fisheye:
             k1, k2, k3, k4 = distortion_coeffs[:, 0]
