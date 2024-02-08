@@ -53,13 +53,14 @@ class MainWidget(QtWidgets.QMainWindow):
         for dock in self.docks.values():
             self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         self.docks["Camera"].connect_camera_clicked.connect(self.open_camera)
-        self.docks["Calibrate"].calibrate_clicked.connect(self.calibrate)
+        self.docks["Calibrate"].start_calibrate.connect(self.calibrate)
         self.docks["Calibrate"].save_clicked.connect(self.save_calibration)
 
         self.image_display_items = []
         self.image_width = 100
 
         self.camera_display = None
+        self.fisheye = None
         self.rms_error = None
         self.intrinsic_matrix = None
         self.distortion_coeffs = None
@@ -117,19 +118,20 @@ class MainWidget(QtWidgets.QMainWindow):
         self.image_display_items.clear()
 
     def open_camera(self, camera_no):
-        self.camera_display = CameraDisplay(camera_no)
+        self.camera_display = CameraDisplay(camera_no, self)
         self.camera_display.add_image.connect(self.add_image)
         self.camera_display.closed.connect(self.docks["Camera"].camera_closed())
         self.camera_display.show()
 
-    def calibrate(self):
+    def calibrate(self, fisheye):
+        self.fisheye = fisheye
         imgshapes = []
         objpoints = []
         imgpoints = []
         for image_display in self.image_display_items:
             if (
-                image_display.objpoints is not None
-                and image_display.imgpoints is not None
+                    image_display.objpoints is not None
+                    and image_display.imgpoints is not None
             ):
                 objpoints.append(image_display.objpoints)
                 imgpoints.append(image_display.imgpoints)
@@ -144,26 +146,37 @@ class MainWidget(QtWidgets.QMainWindow):
             self.error_dialog("Image with different shape was used!")
             self.clear_results()
             return
+        if fisheye:
+            objpoints = np.expand_dims(np.asarray(objpoints), -2)  # https://github.com/opencv/opencv/issues/5534
+            (
+                self.rms_error,
+                self.intrinsic_matrix,
+                self.distortion_coeffs,
+                self.rotation_vecs,
+                self.translation_vecs,
+            ) = cv.fisheye.calibrate(objpoints, imgpoints, imgshapes[0], None, None)
 
-        (
-            self.rms_error,
-            self.intrinsic_matrix,
-            self.distortion_coeffs,
-            self.rotation_vecs,
-            self.translation_vecs,
-        ) = cv.calibrateCamera(objpoints, imgpoints, imgshapes[0], None, None)
+        else:
+            (
+                self.rms_error,
+                self.intrinsic_matrix,
+                self.distortion_coeffs,
+                self.rotation_vecs,
+                self.translation_vecs,
+            ) = cv.calibrateCamera(objpoints, imgpoints, imgshapes[0], None, None)
 
         self.output_results()
 
     def save_calibration(self):
         if any(
-            (
-                self.rms_error is None,
-                self.intrinsic_matrix is None,
-                self.distortion_coeffs is None,
-                self.rotation_vecs is None,
-                self.translation_vecs is None,
-            )
+                (
+                        self.fisheye is None,
+                        self.rms_error is None,
+                        self.intrinsic_matrix is None,
+                        self.distortion_coeffs is None,
+                        self.rotation_vecs is None,
+                        self.translation_vecs is None,
+                )
         ):
             self.error_dialog("No calibration available!")
             return
@@ -179,6 +192,7 @@ class MainWidget(QtWidgets.QMainWindow):
                     dict(
                         K=self.intrinsic_matrix.tolist(),
                         D=self.distortion_coeffs.tolist(),
+                        fisheye=self.fisheye,
                     ),
                     f,
                     sort_keys=False,
@@ -186,7 +200,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 )
 
         elif save_path.suffix == ".npz":
-            np.savez(save_path, K=self.intrinsic_matrix, D=self.distortion_coeffs)
+            np.savez(save_path, K=self.intrinsic_matrix, D=self.distortion_coeffs, fisheye=self.fisheye)
 
     def clear_results(self):
         self.rms_error = None
@@ -194,6 +208,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.distortion_coeffs = None
         self.rotation_vecs = None
         self.translation_vecs = None
+        self.fisheye = None
         self.docks["Calibrate"].results_label.setText("")
 
     def output_results(self):
@@ -203,6 +218,7 @@ class MainWidget(QtWidgets.QMainWindow):
             self.distortion_coeffs,
             self.rotation_vecs,
             self.translation_vecs,
+            self.fisheye
         )
 
     def wheelEvent(self, evt):

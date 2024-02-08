@@ -5,7 +5,7 @@ from defs import QtCore, QtWidgets, Signal
 
 
 class CalibrateDock(BaseDock):
-    calibrate_clicked = Signal()
+    start_calibrate = Signal(bool)
     save_clicked = Signal()
 
     def __init__(self):
@@ -13,12 +13,16 @@ class CalibrateDock(BaseDock):
 
         self.setWindowTitle("Calibrate")
 
+        self.camera_model_combobox = QtWidgets.QComboBox(self)
+        self.camera_model_combobox.addItems(["Standard", "Fish Eye"])
+        self.dock_layout.addWidget(self.camera_model_combobox)
+
         self.calibrate_button = QtWidgets.QPushButton(self)
         self.play_icon = qta.icon("mdi.play-circle")
         self.calibrate_button.setIcon(self.play_icon)
         self.calibrate_button.setText("Calibrate")
         self.calibrate_button.setToolTip("Calibrate.")
-        self.calibrate_button.clicked.connect(self.calibrate_clicked)
+        self.calibrate_button.clicked.connect(self.calibrate_button_clicked)
         self.dock_layout.addWidget(self.calibrate_button)
 
         self.results_label = QtWidgets.QLabel(self)
@@ -35,21 +39,24 @@ class CalibrateDock(BaseDock):
         self.save_button.clicked.connect(self.save_clicked)
         self.dock_layout.addWidget(self.save_button)
 
+    def calibrate_button_clicked(self):
+        camera_model = self.camera_model_combobox.currentText().replace(" ", "").lower()
+        self.start_calibrate.emit(camera_model == "fisheye")
+
     def set_results(
-        self,
-        rms_error,
-        intrinsic_matrix,
-        distortion_coeffs,
-        rotation_vecs,
-        translation_vecs,
+            self,
+            rms_error,
+            intrinsic_matrix,
+            distortion_coeffs,
+            rotation_vecs,
+            translation_vecs,
+            fisheye
     ):
         fx = intrinsic_matrix[0, 0]
         fy = intrinsic_matrix[1, 1]
         cx = intrinsic_matrix[0, 2]
         cy = intrinsic_matrix[1, 2]
         s = intrinsic_matrix[0, 1]
-
-        k1, k2, p1, p2, k3 = distortion_coeffs[0]
 
         output_text = (
             f"RMS Error,\n"
@@ -66,13 +73,26 @@ class CalibrateDock(BaseDock):
             f"Camera Matrix,\n"
             f"{intrinsic_matrix.astype(int)}\n"
             f"\n\n"
-            f"Distortion Coefficients,\n"
-            f"k1 = {k1:.4f}\n"
-            f"k2 = {k2:.4f}\n"
-            f"p1 = {p1:.4f}\n"
-            f"p2 = {p2:.4f}\n"
-            f"k3 = {k3:.4f}\n"
         )
+        if fisheye:
+            k1, k2, k3, k4 = distortion_coeffs[:, 0]
+            output_text += (
+                f"Distortion Coefficients,\n"
+                f"k1 = {k1:.4f}\n"
+                f"k2 = {k2:.4f}\n"
+                f"k3 = {k3:.4f}\n"
+                f"k4 = {k4:.4f}\n"
+            )
+        else:
+            k1, k2, p1, p2, k3 = distortion_coeffs[0]
+            output_text += (
+                f"Distortion Coefficients,\n"
+                f"k1 = {k1:.4f}\n"
+                f"k2 = {k2:.4f}\n"
+                f"p1 = {p1:.4f}\n"
+                f"p2 = {p2:.4f}\n"
+                f"k3 = {k3:.4f}\n"
+            )
         self.results_label.setText(f"Results:\n\n{output_text}")
 
 

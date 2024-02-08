@@ -12,6 +12,8 @@ class CameraDisplay(QtWidgets.QWidget):
     def __init__(self, camera_no, parent=None):
         super().__init__(parent=parent)
 
+        self.setWindowFlags(QtCore.Qt.WindowType.Window)
+
         self.camera_no = camera_no
         self.resize(640, 480)
 
