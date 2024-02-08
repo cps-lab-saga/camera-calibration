@@ -1,6 +1,6 @@
 import cv2
 
-from defs import QtGui
+from camera_calibration.defs import QtGui
 
 
 def data_to_bbox(x, y, wx, wy):

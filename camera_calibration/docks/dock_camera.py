@@ -3,8 +3,8 @@ import re
 import qtawesome as qta
 
 from camera_calibration.custom_components.dock_base import BaseDock
+from camera_calibration.defs import QtWidgets, Signal
 from camera_calibration.funcs.opencv_camera import get_cameras
-from defs import QtWidgets, Signal
 
 
 class CameraDock(BaseDock):

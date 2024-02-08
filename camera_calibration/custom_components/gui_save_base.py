@@ -2,7 +2,7 @@ import inspect
 from distutils.util import strtobool
 
 from camera_calibration.custom_components.path_edit import PathEdit
-from defs import QtWidgets
+from camera_calibration.defs import QtWidgets
 
 
 class BaseGuiSave:

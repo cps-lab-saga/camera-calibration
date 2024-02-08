@@ -1,4 +1,4 @@
-from defs import QtCore, QtWidgets, QtGui
+from camera_calibration.defs import QtCore, QtWidgets, QtGui
 
 
 def make_pattern_pixmap(

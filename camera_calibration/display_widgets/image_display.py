@@ -2,8 +2,8 @@ import cv2 as cv
 import qtawesome as qta
 
 from camera_calibration.custom_components import tab10_gbr, tab10_rgb
+from camera_calibration.defs import QtCore, QtWidgets, QtGui, Signal
 from camera_calibration.funcs import cvImg_to_qImg, find_points
-from defs import QtCore, QtWidgets, QtGui, Signal
 
 
 class ImageDisplay(QtWidgets.QFrame):

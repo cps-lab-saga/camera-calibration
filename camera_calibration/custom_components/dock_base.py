@@ -1,6 +1,6 @@
 from camera_calibration.custom_components.gui_save_base import BaseGuiSave
 
-from defs import QtCore, QtWidgets
+from camera_calibration.defs import QtCore, QtWidgets
 
 
 class BaseDock(QtWidgets.QDockWidget, BaseGuiSave):

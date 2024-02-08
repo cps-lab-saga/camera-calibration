@@ -3,8 +3,8 @@ from pathlib import Path
 import qtawesome as qta
 
 from camera_calibration.custom_components.dock_base import BaseDock
+from camera_calibration.defs import QtCore, QtWidgets, Signal
 from camera_calibration.funcs import make_pattern_pixmap
-from defs import QtCore, QtWidgets, Signal
 
 
 class PatternDock(BaseDock):

@@ -2,8 +2,8 @@ from pathlib import Path
 
 import qtawesome as qta
 
+from camera_calibration.defs import QtWidgets, Signal
 from camera_calibration.funcs import get_extensions_for_type
-from defs import QtWidgets, Signal
 
 
 class MenuBar(QtWidgets.QMenuBar):

@@ -1,8 +1,8 @@
 import qtawesome as qta
 
+from camera_calibration.defs import QtCore, QtWidgets, QtGui, Signal
 from camera_calibration.funcs import cvImg_to_qImg
 from camera_calibration.workers.worker_stream import StreamWorker
-from defs import QtCore, QtWidgets, QtGui, Signal
 
 
 class CameraDisplay(QtWidgets.QWidget):

@@ -1,6 +1,6 @@
 import cv2 as cv
 
-from defs import QtCore, Signal
+from camera_calibration.defs import QtCore, Signal
 
 
 class StreamWorker(QtCore.QObject):

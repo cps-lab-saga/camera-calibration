@@ -1,7 +1,7 @@
 from pathlib import Path
 
+from camera_calibration.defs import QtCore, QtWidgets, Signal
 from camera_calibration.funcs import check_file_type
-from defs import QtCore, QtWidgets, Signal
 
 
 class DroppableWidget(QtWidgets.QWidget):

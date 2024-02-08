@@ -4,7 +4,7 @@
 
 """PySide6 port of the widgets/layouts/flowlayout example from Qt v6.x"""
 
-from defs import QtCore, QtWidgets
+from camera_calibration.defs import QtCore, QtWidgets
 
 
 class FlowLayout(QtWidgets.QLayout):

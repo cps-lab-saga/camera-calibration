@@ -7,14 +7,20 @@ from pathlib import Path
 import cv2 as cv
 import numpy as np
 import qtawesome as qta
-from PySide6 import QtGui
 
 from camera_calibration.custom_components import DroppableWidget, FlowLayout
+from camera_calibration.defs import (
+    QtCore,
+    QtGui,
+    QtWidgets,
+    log_file,
+    settings_file,
+    resource_dir,
+)
 from camera_calibration.display_widgets import ImageDisplay
 from camera_calibration.display_widgets.camera_display import CameraDisplay
 from camera_calibration.docks import PatternDock, CameraDock, CalibrateDock
 from camera_calibration.menu_bar import MenuBar
-from defs import QtCore, QtWidgets, log_file, settings_file, resource_dir
 
 
 class MainWidget(QtWidgets.QMainWindow):
@@ -138,8 +144,8 @@ class MainWidget(QtWidgets.QMainWindow):
         imgpoints = []
         for image_display in self.image_display_items:
             if (
-                    image_display.objpoints is not None
-                    and image_display.imgpoints is not None
+                image_display.objpoints is not None
+                and image_display.imgpoints is not None
             ):
                 objpoints.append(image_display.objpoints)
                 imgpoints.append(image_display.imgpoints)
@@ -179,14 +185,14 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def save_calibration(self):
         if any(
-                (
-                        self.fisheye is None,
-                        self.rms_error is None,
-                        self.intrinsic_matrix is None,
-                        self.distortion_coeffs is None,
-                        self.rotation_vecs is None,
-                        self.translation_vecs is None,
-                )
+            (
+                self.fisheye is None,
+                self.rms_error is None,
+                self.intrinsic_matrix is None,
+                self.distortion_coeffs is None,
+                self.rotation_vecs is None,
+                self.translation_vecs is None,
+            )
         ):
             self.error_dialog("No calibration available!")
             return

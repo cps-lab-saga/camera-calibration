@@ -1,7 +1,7 @@
 import qtawesome as qta
 
 from camera_calibration.custom_components.dock_base import BaseDock
-from defs import QtCore, QtWidgets, Signal
+from camera_calibration.defs import QtCore, QtWidgets, Signal
 
 
 class CalibrateDock(BaseDock):
@@ -33,7 +33,9 @@ class CalibrateDock(BaseDock):
         self.dock_layout.addWidget(self.results_scroll_area)
 
         self.results_label = QtWidgets.QLabel(self)
-        self.results_label.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.results_label.setTextInteractionFlags(
+            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
+        )
         self.scroll_area_layout.addWidget(self.results_label)
 
         icon_size = 18
@@ -50,13 +52,13 @@ class CalibrateDock(BaseDock):
         self.start_calibrate.emit(camera_model == "fisheye")
 
     def set_results(
-            self,
-            rms_error,
-            intrinsic_matrix,
-            distortion_coeffs,
-            rotation_vecs,
-            translation_vecs,
-            fisheye,
+        self,
+        rms_error,
+        intrinsic_matrix,
+        distortion_coeffs,
+        rotation_vecs,
+        translation_vecs,
+        fisheye,
     ):
         fx = intrinsic_matrix[0, 0]
         fy = intrinsic_matrix[1, 1]

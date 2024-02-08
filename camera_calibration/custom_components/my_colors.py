@@ -1,4 +1,4 @@
-from defs import QtGui
+from camera_calibration.defs import QtGui
 
 tab10_rgb = {
     "blue": (31, 119, 180),
