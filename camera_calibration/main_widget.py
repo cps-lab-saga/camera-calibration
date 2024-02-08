@@ -20,8 +20,8 @@ from defs import QtCore, QtWidgets, log_file, settings_file, resource_dir
 class MainWidget(QtWidgets.QMainWindow):
     calibration_saved = QtCore.Signal(object)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
 
         self.setWindowTitle("Calibrate Camera")
         self.setWindowIcon(QtGui.QIcon(str(resource_dir() / "calibration.svg")))
