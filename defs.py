@@ -1,7 +1,7 @@
 from pathlib import Path
 
 project_name = "camera-calibration"
-app_version = "0.1.4"
+app_version = "0.1.5"
 
 module_name = project_name.replace("-", "_")
 
