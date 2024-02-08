@@ -13,6 +13,7 @@ from camera_calibration.custom_components import DroppableWidget, FlowLayout
 from camera_calibration.display_widgets import ImageDisplay
 from camera_calibration.display_widgets.camera_display import CameraDisplay
 from camera_calibration.docks import PatternDock, CameraDock, CalibrateDock
+from camera_calibration.menu_bar import MenuBar
 from defs import QtCore, QtWidgets, log_file, settings_file, resource_dir
 
 
@@ -23,6 +24,10 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setWindowTitle("Calibrate Camera")
         self.setWindowIcon(QtGui.QIcon(str(resource_dir() / "calibration.svg")))
         self.resize(800, 600)
+
+        self.menu_bar = MenuBar(self)
+        self.setMenuBar(self.menu_bar)
+        self.menu_bar.open_image_file.connect(self.item_dropped)
 
         self.main_widget = DroppableWidget(filetypes=["image"], parent=self)
         self.main_widget.setToolTip("Drop images here.")
@@ -130,8 +135,8 @@ class MainWidget(QtWidgets.QMainWindow):
         imgpoints = []
         for image_display in self.image_display_items:
             if (
-                    image_display.objpoints is not None
-                    and image_display.imgpoints is not None
+                image_display.objpoints is not None
+                and image_display.imgpoints is not None
             ):
                 objpoints.append(image_display.objpoints)
                 imgpoints.append(image_display.imgpoints)
@@ -147,7 +152,9 @@ class MainWidget(QtWidgets.QMainWindow):
             self.clear_results()
             return
         if fisheye:
-            objpoints = np.expand_dims(np.asarray(objpoints), -2)  # https://github.com/opencv/opencv/issues/5534
+            objpoints = np.expand_dims(
+                np.asarray(objpoints), -2
+            )  # https://github.com/opencv/opencv/issues/5534
             (
                 self.rms_error,
                 self.intrinsic_matrix,
@@ -169,14 +176,14 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def save_calibration(self):
         if any(
-                (
-                        self.fisheye is None,
-                        self.rms_error is None,
-                        self.intrinsic_matrix is None,
-                        self.distortion_coeffs is None,
-                        self.rotation_vecs is None,
-                        self.translation_vecs is None,
-                )
+            (
+                self.fisheye is None,
+                self.rms_error is None,
+                self.intrinsic_matrix is None,
+                self.distortion_coeffs is None,
+                self.rotation_vecs is None,
+                self.translation_vecs is None,
+            )
         ):
             self.error_dialog("No calibration available!")
             return
@@ -200,7 +207,12 @@ class MainWidget(QtWidgets.QMainWindow):
                 )
 
         elif save_path.suffix == ".npz":
-            np.savez(save_path, K=self.intrinsic_matrix, D=self.distortion_coeffs, fisheye=self.fisheye)
+            np.savez(
+                save_path,
+                K=self.intrinsic_matrix,
+                D=self.distortion_coeffs,
+                fisheye=self.fisheye,
+            )
 
     def clear_results(self):
         self.rms_error = None
@@ -218,7 +230,7 @@ class MainWidget(QtWidgets.QMainWindow):
             self.distortion_coeffs,
             self.rotation_vecs,
             self.translation_vecs,
-            self.fisheye
+            self.fisheye,
         )
 
     def wheelEvent(self, evt):

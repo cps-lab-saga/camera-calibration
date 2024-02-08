@@ -44,13 +44,13 @@ class CalibrateDock(BaseDock):
         self.start_calibrate.emit(camera_model == "fisheye")
 
     def set_results(
-            self,
-            rms_error,
-            intrinsic_matrix,
-            distortion_coeffs,
-            rotation_vecs,
-            translation_vecs,
-            fisheye
+        self,
+        rms_error,
+        intrinsic_matrix,
+        distortion_coeffs,
+        rotation_vecs,
+        translation_vecs,
+        fisheye,
     ):
         fx = intrinsic_matrix[0, 0]
         fy = intrinsic_matrix[1, 1]
