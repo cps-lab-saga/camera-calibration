@@ -32,14 +32,14 @@ class PatternDock(BaseDock):
         self.show_col_spinbox = QtWidgets.QSpinBox(self)
         self.show_col_spinbox.setSuffix(" Columns")
         self.show_col_spinbox.setRange(1, 100)
-        self.show_col_spinbox.setValue(10)
+        self.show_col_spinbox.setValue(6)
         self.show_col_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_col_spinbox)
 
         self.show_row_spinbox = QtWidgets.QSpinBox(self)
         self.show_row_spinbox.setSuffix(" Rows")
         self.show_row_spinbox.setRange(1, 100)
-        self.show_row_spinbox.setValue(10)
+        self.show_row_spinbox.setValue(6)
         self.show_row_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_row_spinbox)
 
@@ -52,7 +52,7 @@ class PatternDock(BaseDock):
         self.show_size_spinbox.setRange(1, 100)
         self.show_size_spinbox.setDecimals(1)
         self.show_size_spinbox.setSingleStep(0.5)
-        self.show_size_spinbox.setValue(25)
+        self.show_size_spinbox.setValue(20)
         self.show_size_spinbox.valueChanged.connect(self.update_pattern)
         row_layout.addWidget(self.show_size_spinbox)
 

@@ -17,6 +17,7 @@ class MenuBar(QtWidgets.QMenuBar):
         self.open_image_file_action = self.file_menu.addAction(
             qta.icon("mdi6.file-image"), "Open Image File..."
         )
+        self.open_image_file_action.setShortcut("Ctrl+O")
         self.open_image_file_action.triggered.connect(self.add_file)
 
         self.open_image_folder_action = self.file_menu.addAction(
